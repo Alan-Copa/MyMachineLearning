@@ -1,0 +1,275 @@
+% \documentclass{article}
+% \usepackage{graphicx} % Required for inserting images
+
+% \title{ass1 ML MSc}
+% \author{Alan Copa}
+% \date{October 2024}
+
+% \begin{document}
+
+% \maketitle
+
+% \section{Introduction}
+
+% \end{document}
+\documentclass{article}
+\usepackage{amsmath}
+
+\title{Problem 1: Ridge Regression}
+\author{Alan Copa}
+\date{October 2024}
+
+\begin{document}
+
+\maketitle
+
+\section*{Problem 1. Ridge Regression }
+
+\subsection*{1. Ridge Regression Model}
+
+The ridge regression model is a linear regression model with an added \( \ell_2 \) regularization term. The equation for the model is:
+
+\[
+\hat{y} = X w
+\]
+
+% The design matrix \( \Phi \), which is equivalent to \( X \), contains the feature vectors for all training points. It is constructed by stacking the transposed feature vectors \( \phi(x_n)^T \) as rows. The matrix \( \Phi \in \mathbb{R}^{N \times D} \) has \( N \) rows (one for each training sample) and \( D \) columns (one for each feature). 
+
+% It can be written as:
+
+\[
+\Phi = X = \begin{bmatrix}
+    \phi_1(x_1) & \phi_2(x_1) & \dots & \phi_D(x_1) \\
+    \phi_1(x_2) & \phi_2(x_2) & \dots & \phi_D(x_2) \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \phi_1(x_N) & \phi_2(x_N) & \dots & \phi_D(x_N)
+\end{bmatrix}
+\]
+
+Where:
+\begin{itemize}
+    \item Each row \( \phi(x_n)^T = \begin{bmatrix} \phi_1(x_n) & \phi_2(x_n) & \dots & \phi_D(x_n) \end{bmatrix} \) corresponds to the feature vector for the \( n \)-th training sample \( x_n \),
+    \item \( \Phi \in \mathbb{R}^{N \times D} \) is the design matrix, where \( N \) is the number of training samples and \( D \) is the number of features.
+\end{itemize}
+
+
+Where:
+\begin{itemize}
+    \item \( X \in \mathbb{R}^{N \times D} \) is the design matrix, where each row represents a feature vector \( x_i \in \mathbb{R}^D \).
+    \item \( w \in \mathbb{R}^D \) is the parameter vector of the model.
+    \item \( \hat{y} \in \mathbb{R}^N \) is the vector of predicted values.
+\end{itemize}
+
+
+% new shit
+
+
+In this context, the design matrix \( \Phi \) is equivalent to the matrix \( X \) typically used in regression models:
+
+\[
+\Phi = X
+\]
+
+Where:
+\begin{itemize}
+    \item \( X \in \mathbb{R}^{N \times D} \) is the design matrix, where \( N \) is the number of training samples, and \( D \) is the number of features.
+    \item Each row of \( X \) represents a feature vector \( \phi(x_n) \) corresponding to a training sample \( x_n \in \mathbb{R}^D \).
+\end{itemize}
+
+\newpage
+
+In ridge regression, \( \phi(x_n)^T \) represents the transpose of the feature vector \( \phi(x_n) \), which is a row vector. More precisely:
+
+\[
+\phi(x_n)^T = \begin{bmatrix} \phi_1(x_n) & \phi_2(x_n) & \dots & \phi_D(x_n) \end{bmatrix}
+\]
+
+
+Where:
+\begin{itemize}
+    \item \( \phi(x_n) \in \mathbb{R}^D \) is the column vector (feature vector) associated with the \( n \)-th training sample \( x_n \).
+    \item \( \phi(x_n)^T \in \mathbb{R}^{1 \times D} \) is the row vector obtained by transposing \( \phi(x_n) \), meaning it is a horizontal vector of the features corresponding to the sample \( x_n \).
+    \item \( \phi_1(x_n), \phi_2(x_n), \dots, \phi_D(x_n) \) are the individual feature values for the \( n \)-th training point.
+\end{itemize}
+
+When you multiply \( \phi(x_n)^T \) by the weight vector \( w \), the result is a scalar:
+
+\[
+\phi(x_n)^T w = \sum_{j=1}^{D} \phi_j(x_n) w_j
+\]
+
+This represents the dot product between the feature vector \( \phi(x_n) \) and the weight vector \( w \), which gives the predicted value for the \( n \)-th training point. \\ \\
+\\
+The feature vector \( \phi(x_n) \) is typically written as a column vector:
+
+\[
+\phi(x_n) = \begin{bmatrix} \phi_1(x_n) \\ \phi_2(x_n) \\ \vdots \\ \phi_D(x_n) \end{bmatrix}
+\]
+
+Its transpose \( \phi(x_n)^T \) is a row vector:
+
+\[
+\phi(x_n)^T = \begin{bmatrix} \phi_1(x_n) & \phi_2(x_n) & \dots & \phi_D(x_n) \end{bmatrix}
+\]
+
+Where:
+\begin{itemize}
+    \item \( \phi_1(x_n), \phi_2(x_n), \dots, \phi_D(x_n) \) are the feature values for the \( n \)-th training point.
+    \item \( \phi(x_n) \in \mathbb{R}^{D \times 1} \) is the column vector of features.
+    \item \( \phi(x_n)^T \in \mathbb{R}^{1 \times D} \) is the transposed row vector.
+\end{itemize}
+
+This means that for any given input \( x_n \), the feature vector can either be represented as a column vector \( \phi(x_n) \) or as a row vector \( \phi(x_n)^T \).
+
+\newpage 
+
+\subsection*{2. Loss Function with \( \ell_2 \) Regularization}
+
+The loss function for ridge regression is the Mean Squared Error (MSE) with an added \( \ell_2 \) regularization term weighted by \( \lambda \):
+
+\[
+L(w) = \frac{1}{N} \sum_{i=1}^{N} (X_i w - y_i)^2 + \lambda \|w\|_2^2
+\]
+\[
+L(w) = \frac{1}{N} \sum_{n=1}^{N} ( \phi(x_n)^T w - t_n )^2 + \lambda \|w\|_2^2
+\]
+\[
+L(w) = \frac{1}{N} \left( (\Phi w - t)^T (\Phi w - t) \right) + \lambda w^T w
+\]  
+
+Where:
+\begin{itemize}
+    \item \( \frac{1}{N} \sum_{i=1}^{N} (X_i w - y_i)^2 \) is the MSE term, representing the difference between the predicted and true values.
+    \item \( \|w\|_2^2 \) is the squared Euclidean norm of the parameter vector \( w \), also known as the \( \ell_2 \) norm.
+    \item \( \lambda \) is the regularization parameter that controls the strength of the regularization.
+\end{itemize}
+
+\subsection*{3. Condition to Find the Model Parameters}
+
+To find the optimal parameters \( w \), we need to minimize the loss function \( L(w) \). This is done by setting the gradient of \( L(w) \) with respect to \( w \) to zero:
+
+\[
+\nabla_w L(w) = 0
+\]
+\[
+\nabla_w L(w) = \frac{2}{N} \Phi^T (\Phi w - t) + 2 \lambda w
+\]
+
+This results in the normal equation for ridge regression, as shown in the next section.
+
+\subsection*{4. Finding the Optimal Parameters}
+
+The optimal parameters \( w \) for the ridge regression model can be found by solving the following normal equation:
+
+\[
+\frac{2}{N} \Phi^T (\Phi w - t) + 2 \lambda w = 0
+\]
+\[
+\Phi^T \Phi w + N \lambda w = \Phi^T t
+\]
+\[
+w = (\Phi^T \Phi + N \lambda I)^{-1} \Phi^T t
+\]
+
+\\
+
+
+\[
+w = (X^T X + \lambda I)^{-1} X^T y
+\]
+
+
+Where:
+\begin{itemize}
+    \item \( X^T \) is the transpose of the design matrix \( X \).
+    \item \( I \) is the identity matrix of appropriate dimensions.
+    \item \( \lambda I \) is the regularization term added to prevent overfitting.
+\end{itemize}
+
+Thus, the ideal model parameters \( w \) are obtained by solving the above linear system, where \( \lambda \) controls the trade-off between minimizing the error on the training data and the complexity of the model.
+
+
+\newpage
+\section*{Problem 2: Feature Engineering and Classification Algorithms}
+
+\subsection*{1. Classification Algorithms}
+
+There are various algorithms that can be used to solve classification problems. Below, we describe two algorithms: Logistic Regression and k-Nearest Neighbors (k-NN).
+
+\subsubsection*{Logistic Regression}
+
+Logistic Regression is a parametric model that predicts the probability that a given input belongs to a particular class. It works by fitting a linear boundary between the classes and using the logistic function to map the predicted values to probabilities.
+
+The model is given by:
+
+\[
+P(C_1 | \phi(x)) = \sigma(w^T \phi(x)) = \frac{1}{1 + e^{-w^T \phi(x)}}
+\]
+
+Where:
+\begin{itemize}
+    \item \( \sigma(z) = \frac{1}{1 + e^{-z}} \) is the logistic sigmoid function,
+    \item \( \phi(x) \) is the feature vector of the input \( x \),
+    \item \( w \) is the weight vector that defines the decision boundary.
+\end{itemize}
+
+**Advantages:**
+\begin{itemize}
+    \item Easy to interpret, as the model provides probabilities for class membership.
+    \item Works well for linearly separable data.
+\end{itemize}
+
+**Disadvantages:**
+\begin{itemize}
+    \item Not suitable for non-linearly separable data without feature engineering or transformations.
+    \item Sensitive to outliers.
+\end{itemize}
+
+\subsubsection*{k-Nearest Neighbors (k-NN)}
+
+The k-Nearest Neighbors (k-NN) algorithm is a non-parametric method that classifies a data point based on the majority class of its \( k \)-nearest neighbors. It does not make assumptions about the underlying data distribution.
+
+The algorithm works as follows:
+\begin{itemize}
+    \item Calculate the distance between the test point and all training points.
+    \item Select the \( k \)-closest points.
+    \item Assign the class based on the majority vote of the \( k \)-nearest neighbors.
+\end{itemize}
+
+**Advantages:**
+\begin{itemize}
+    \item Simple to implement and understand.
+    \item Effective for data with non-linear boundaries.
+\end{itemize}
+
+**Disadvantages:**
+\begin{itemize}
+    \item Computationally expensive for large datasets, as distances must be calculated for each test point.
+    \item Sensitive to the choice of \( k \) and the metric used for calculating distances.
+\end{itemize}
+
+\subsection*{2. Feature Engineering for Linearly Separable Classes}
+
+In this task, we are provided with a dataset of 2D points \( S_n = (x_n^{(1)}, x_n^{(2)}) \), and the goal is to propose new features that make the classes linearly separable. Below are two possible feature transformations:
+
+\subsubsection*{Solution 1: Polynomial Features}
+
+We can create new polynomial features based on the original features \( x_n^{(1)} \) and \( x_n^{(2)} \). For example, we can add a quadratic feature:
+
+\[
+\phi_1(x_n) = x_n^{(1)}, \quad \phi_2(x_n) = x_n^{(2)}, \quad \phi_3(x_n) = (x_n^{(1)})^2
+\]
+
+By adding the quadratic term \( (x_n^{(1)})^2 \), the data can become linearly separable in this new feature space.
+
+\subsubsection*{Solution 2: Radial Basis Function (RBF) Kernel Features}
+
+Another solution is to apply the Radial Basis Function (RBF) kernel, which maps the data into a higher-dimensional space where it can become linearly separable. The RBF kernel is defined as:
+
+\[
+\phi(x_n, x_m) = \exp\left(-\gamma \| x_n - x_m \|^2 \right)
+\]
+
+This transformation introduces a new feature space where the similarity between points is captured, making it possible to separate the classes.
+
+\end{document}
