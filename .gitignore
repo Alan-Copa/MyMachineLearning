@@ -1,0 +1,111 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Byte-compiled / optimized / DLL files
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.dll
+*.so
+
+# Virtual Environment
+venv/
+env/
+.venv/
+.env/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Anaconda
+*.bak
+*.orig
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+pip-wheel-metadata/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+.coverage
+*.cover
+*.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.code-coverage
+*.lcov
+
+# Pytest
+.pytest_cache/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# PyCharm
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# Editor backups
+*~
+*.swp
+*.swo
+*.swn
+
+# macOS Trash folder which might appear when mounting external volumes
+.Trashes
