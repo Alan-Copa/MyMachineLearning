@@ -1,4 +1,6 @@
 # macOS
+# Ignore .DS_Store files across the entire repository
+**/.DS_Store
 .DS_Store
 .AppleDouble
 .LSOverride
