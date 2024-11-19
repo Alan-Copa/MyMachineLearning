@@ -54,13 +54,18 @@ The function $f$ is the ReLU nonlinearity, applied element-wise. The loss of the
 $$
     L := \frac{1}{2} \sum_{k=1}^3(y_k-t_k)^2.
 $$
-\begin{itemize}
+\begin{enumerate}
     \item Numerically calculate the loss and the gradients of $L$ with respect to $W^{(1)}$, $\mathbf{w}^{(2)}$, $\mathbf{b}^{(1)}$ and $b^{(2)}$, and explain your process.
     You may use a calculator or math software (numpy, matlab, ...), but no auto-differentiation libraries like PyTorch or Jax.
     Tip: If you use matrix-matrix multiplications involving $X$, you don't need to do multiple explicit forward and backward passes.
     \item It is more computationally efficient to calculate gradients in a neural network when we start the chain of derivatives on the side of the loss and then going backward, as opposed to starting on the input side and going forward.
     Explain why this is the case using the given example.
-\end{itemize}
+\end{enumerate}
+
+\subsection{Solution}
+
+\subsection{Solution}
+
 
 
 % Problem 2 Section
