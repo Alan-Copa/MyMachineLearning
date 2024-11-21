@@ -1,109 +1,125 @@
-\documentclass[a4paper,12pt]{article}
-\usepackage{amsmath,amsfonts,amssymb}
-\usepackage{graphicx}
-\usepackage{hyperref}
-\usepackage{enumitem}
-\usepackage{geometry}
-\usepackage{titlesec}
+\section*{Solution: Convolutional Network Design}
 
-\geometry{margin=1in}
+We aim to design a convolutional network that reduces the input \( 32 \times 32 \) image with 3 channels into \( 4 \times 4 \) feature maps with 64 channels. Below is the architecture, layer-by-layer computations, and the total number of learnable parameters.
 
-\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
-
-% Title Section
-\title{Machine Learning Assignment 2\\
-Neural Networks}
-\date{Submission deadline: November 21, 2024}
-\author{}
-
-\begin{document}
-
-\maketitle
-
-\noindent Please submit your solution in PDF format (preferably, but not necessarily, \LaTeX --- this .tex file can be found on iCorsi). Handwriting and scanned documents are not allowed. 
-In case you need further help, please write on iCorsi or contact me at \href{mailto:vincent.herrmann@idsia.ch}{vincent.herrmann@usi.ch}.
-
-% Problem 1 Section
-\section{Problem 1. Calculating Gradients (20 points)}
-A two-layer neural network is defined by the following equation: 
-$$
-y_k := \mathbf{w}^{(2) \top} f\big( W^{(1)} \mathbf{x}_k + \mathbf{b}^{(1)}\big) + b^{(2)}
-$$
-The values of the input vectors $\mathbf{x}_k \in \mathbb{R}^4$ (summarized in the matrix $X \in \mathbb{R}^{3 \times 4}$), targets $t_k$ (summarized in the vector $\mathbf{t} \in \mathbb{R}^3$), weights $W^{(1)} \in \mathbb{R}^{2 \times 4}$ and $\mathbf{w}^{(2)} \in \mathbb{R}^2$ as well as biases $\mathbf{b}^{(1)} \in \mathbb{R}^2$ and $b^{(2)} \in \mathbb{R}$ are given below. 
-\begin{align*}
-    X &=
-    \begin{bmatrix}
-        \text{---} & \mathbf{x}_1 & \text{---} \\
-        \text{---} & \mathbf{x}_2 & \text{---} \\
-        \text{---} & \mathbf{x}_3 & \text{---}
-    \end{bmatrix}
-    = [[ 0.2, -0.4, 0.1, 0.5], [ 0.8, 1.0, -0.1, 0.3], [-0.5,  0.9, 0.2, -0.8]] \\
-    \mathbf{t} &= 
-    \begin{bmatrix}
-        t_1 \\
-        t_2 \\
-        t_3 
-    \end{bmatrix}
-    = [-0.5, 0.1, 0.8] \\
-    W^{(1)} &= [[-0.6, 0.7,  0.9, -0.3], [0.4,  0.5, -1.0, 0.1]] \\
-    \mathbf{b}^{(1)} &= [-0.4, -0.5] \\
-    \mathbf{w}^{(2)} &= [ 0.2, 0.6] \\
-    b^{(2)} &= -0.7 \\
-\end{align*}
-The function $f$ is the ReLU nonlinearity, applied element-wise. The loss of the model is 
-$$
-    L := \frac{1}{2} \sum_{k=1}^3(y_k-t_k)^2.
-$$
+\subsection*{Architecture}
 \begin{enumerate}
-    \item Numerically calculate the loss and the gradients of $L$ with respect to $W^{(1)}$, $\mathbf{w}^{(2)}$, $\mathbf{b}^{(1)}$ and $b^{(2)}$, and explain your process.
-    You may use a calculator or math software (numpy, matlab, ...), but no auto-differentiation libraries like PyTorch or Jax.
-    Tip: If you use matrix-matrix multiplications involving $X$, you don't need to do multiple explicit forward and backward passes.
-    \item It is more computationally efficient to calculate gradients in a neural network when we start the chain of derivatives on the side of the loss and then going backward, as opposed to starting on the input side and going forward.
-    Explain why this is the case using the given example.
+    \item \textbf{Input feature map:} \( 32 \times 32 \), 3 feature maps.
+
+    \item \textbf{Conv Layer 1:}
+    \begin{itemize}
+        \item Kernel size: \( 3 \times 3 \)
+        \item Input channels: 3
+        \item Output channels: 16
+        \item Output size:
+        \[
+        \text{Output size} = (32 - 3 + 1) \times (32 - 3 + 1) = 30 \times 30
+        \]
+        \item Output feature maps: \( 30 \times 30 \), 16 feature maps.
+        \item Number of parameters:
+        \[
+        \text{Weights: } 3 \times 3 \times 3 \times 16 = 432, \quad \text{Biases: } 16
+        \]
+        \[
+        \text{Total: } 432 + 16 = 448
+        \]
+    \end{itemize}
+
+    \item \textbf{Max-Pooling Layer 1:}
+    \begin{itemize}
+        \item Pooling size: \( 2 \times 2 \)
+        \item Stride: 2
+        \item Output size:
+        \[
+        \text{Output size} = \frac{30}{2} \times \frac{30}{2} = 15 \times 15
+        \]
+        \item Output feature maps: \( 15 \times 15 \), 16 feature maps.
+    \end{itemize}
+
+    \item \textbf{Conv Layer 2:}
+    \begin{itemize}
+        \item Kernel size: \( 3 \times 3 \)
+        \item Input channels: 16
+        \item Output channels: 32
+        \item Output size:
+        \[
+        \text{Output size} = (15 - 3 + 1) \times (15 - 3 + 1) = 13 \times 13
+        \]
+        \item Output feature maps: \( 13 \times 13 \), 32 feature maps.
+        \item Number of parameters:
+        \[
+        \text{Weights: } 3 \times 3 \times 16 \times 32 = 4608, \quad \text{Biases: } 32
+        \]
+        \[
+        \text{Total: } 4608 + 32 = 4640
+        \]
+    \end{itemize}
+
+    \item \textbf{Max-Pooling Layer 2:}
+    \begin{itemize}
+        \item Pooling size: \( 2 \times 2 \)
+        \item Stride: 2
+        \item Output size:
+        \[
+        \text{Output size} = \frac{13}{2} \times \frac{13}{2} = 6 \times 6
+        \]
+        \item Output feature maps: \( 6 \times 6 \), 32 feature maps.
+    \end{itemize}
+
+    \item \textbf{Conv Layer 3:}
+    \begin{itemize}
+        \item Kernel size: \( 3 \times 3 \)
+        \item Input channels: 32
+        \item Output channels: 64
+        \item Output size:
+        \[
+        \text{Output size} = (6 - 3 + 1) \times (6 - 3 + 1) = 4 \times 4
+        \]
+        \item Output feature maps: \( 4 \times 4 \), 64 feature maps.
+        \item Number of parameters:
+        \[
+        \text{Weights: } 3 \times 3 \times 32 \times 64 = 18432, \quad \text{Biases: } 64
+        \]
+        \[
+        \text{Total: } 18432 + 64 = 18496
+        \]
+    \end{itemize}
 \end{enumerate}
 
-\subsection{Solution}
-
-\subsection{Solution}
-
-
-
-% Problem 2 Section
-\section*{Problem 2. Gradient Descent (15 points)}
-If we choose a learning rate that is too high, gradient descent can diverge (even in the case of convex functions).
-Assume we want to use gradient descent to find the value of $\mathbf{u} = \begin{bmatrix}
-    x \\ y
-\end{bmatrix}$ that minimizes $f(\mathbf{u}) = \mathbf{u}^T \begin{bmatrix}
-    5 & 2 \\
-    2 & 2
-\end{bmatrix} \mathbf{u}$, or equivalently $f(x, y) = 5 x^2 + 2 y^2 + 4 x y$. The update via gradient descent can be written as $\mathbf{u}_{n+1} = \mathbf{u}_n - \eta \nabla f(\mathbf{u}_n)$, with $\eta$ being the learning rate. 
-What is the range of values that $\eta$ can take so that gradient descent eventually converges to the minimum, no matter the starting point? Explain your reasoning–the correct approach is more important than the numerical result.  
-
-% Problem 3 Section
-\section*{Problem 3. Convolutional Networks (15 points)}
-We start with an input image of size $32 \times 32$ and three channels. 
-Provide a sequence of alternating convolutional and pooling layers that transform this image into 64 feature maps of size $4 \times 4$. 
-
-For each convolutional layer, specify the kernel size (e.g., $3 \times 3$, $5 \times 5$ or $7 \times 7$), the number of input channels, and the number of filters. 
-All convolutional layers should have a stride of one in either direction. No padding is used. 
-All pooling layers should be max-pooling layers with a kernel size of $2 \times 2$ and a stride of two in each direction. 
-Give the size and the number of the intermediate feature maps (i.e., the outputs of each layer).
-Calculate the total number of learnable parameters in your network (the number of weights in biases in all layers).
-
-
-Your answer should look roughly like this: 
-
-\noindent Architecture 1:
+\subsection*{Final Architecture Summary}
 \begin{itemize}
-    \item input feature map: $32 \times 32$, $3$ feature maps
-    \item conv layer: kernel size $? \times ?$, $?$ input feature maps, $?$ output feature maps
-    \item output conv layer: $? \times ?$, $?$ feature maps
-    \item pooling layer: $2 \times 2$
-    \item output pooling layer: $? \times ?$, $?$ channels/feature maps
-    \item conv layer: ...
-    \item ...
-    \item output pooling/conv layer: $4 \times 4$, $64$ channels/feature maps
+    \item Input feature map: \( 32 \times 32 \), 3 feature maps.
+    \item Conv Layer 1: \( 3 \times 3 \) kernel, 3 input channels, 16 output channels.
+        \begin{itemize}
+            \item Output: \( 30 \times 30 \), 16 feature maps.
+        \end{itemize}
+    \item Max-Pooling Layer 1: \( 2 \times 2 \) pooling.
+        \begin{itemize}
+            \item Output: \( 15 \times 15 \), 16 feature maps.
+        \end{itemize}
+    \item Conv Layer 2: \( 3 \times 3 \) kernel, 16 input channels, 32 output channels.
+        \begin{itemize}
+            \item Output: \( 13 \times 13 \), 32 feature maps.
+        \end{itemize}
+    \item Max-Pooling Layer 2: \( 2 \times 2 \) pooling.
+        \begin{itemize}
+            \item Output: \( 6 \times 6 \), 32 feature maps.
+        \end{itemize}
+    \item Conv Layer 3: \( 3 \times 3 \) kernel, 32 input channels, 64 output channels.
+        \begin{itemize}
+            \item Output: \( 4 \times 4 \), 64 feature maps.
+        \end{itemize}
 \end{itemize}
-Total number of learnable parameters (weights and biases): ? 
 
-\end{document}
+\subsection*{Total Number of Learnable Parameters}
+\begin{itemize}
+    \item Conv Layer 1: \( 448 \)
+    \item Conv Layer 2: \( 4640 \)
+    \item Conv Layer 3: \( 18496 \)
+\end{itemize}
+\[
+\text{Total Parameters} = 448 + 4640 + 18496 = 23584
+\]
+
+\subsection*{Conclusion}
+The designed convolutional network outputs \( 4 \times 4 \) feature maps with 64 channels and has a total of 23,584 learnable parameters.
