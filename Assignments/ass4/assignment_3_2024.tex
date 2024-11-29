@@ -14,7 +14,7 @@
 \title{Machine Learning Assignment 3\\
 Neural Networks}
 \date{Submission deadline: December 9, 2024}
-\author{}
+\author{Alan Copa}
 
 \begin{document}
 
@@ -108,6 +108,47 @@ $$
 where $\beta_i > 0$. What is the maximum a posteriori (MAP) estimate of $\mathbf{\lambda}$?
 Include all intermediate steps and simplify the final result.
 
+
+\[
+p(\lambda \mid \mathbf{x})\ = p(\mathbf{x} | \mathbf{\lambda}) \cdot p (\lambda)
+\]
+
+\[
+\log p(\lambda \mid \mathbf{x}) = \log(L) + \log p(\lambda),
+\]
+\[
+\frac{\partial}{\partial \lambda_d} \log p(\lambda \mid \mathbf{x}) = \frac{\partial}{\partial \lambda_d} \log(L) + \frac{\partial}{\partial \lambda_d} \log p(\lambda)
+\]
+\\
+Compute maximum of $\log p(\lambda)$:
+\[
+\frac{\partial}{\partial \lambda_d} \log p(\lambda) = \frac{\partial}{\partial \lambda_d} \log \prod_{d=1}^D\beta_de^{-\beta_d \lambda_d}
+\]
+\[
+\frac{\partial}{\partial \lambda_d} \log p(\lambda) = \frac{\partial}{\partial \lambda_d} \sum_{d=1}^D \log \beta_de^{-\beta_d \lambda_d}
+\]
+\[
+\frac{\partial}{\partial \lambda_d} \log p(\lambda) = \frac{\partial}{\partial \lambda_d} ( \sum_{d=1}^D \log \beta_d - \sum_{d=1}^D \beta_d \lambda_d )
+\]
+\[
+\frac{\partial}{\partial \lambda_d} \log p(\lambda) = 0 - \beta_d
+\]
+\[
+\frac{\partial \log p(\lambda)}{\partial \lambda_d} = -\beta_d
+\]
+\\
+with the log-likelihood computed earlier:
+\[
+\frac{\partial}{\partial \lambda_d} \log p(\lambda \mid \mathbf{x}) = \sum_{n=1}^{N} \frac{x_d^{(n)}}{\lambda_d} - N -\beta_d = 0
+\]
+\[
+ \sum_{n=1}^{N} \frac{x_d^{(n)}}{\lambda_d} = N +\beta_d
+\]
+\[
+\lambda_d = \frac{\sum_{n=1}^{N} x_d^{(n)}}{N +\beta_d}
+\]
+
+\newpage
 % Problem 1 Section
 \section{Additional questions (7 points)}
 Give answers to the following questions.
@@ -115,11 +156,41 @@ Give answers to the following questions.
 \subsection{Different prior (3 points)}
 What would be the MAP estimate of $\lambda$ if we chose the uniform prior, i.e., the prior that treats all parameter values as equally likely? Explain your reasoning.
 
+\subsubsection{Solution}
+A uniform prior means that the prior distribution function is constant for all parameters $\lambda_d$, thus:
+\[
+\log p(\lambda) = \text{constant}
+\]
+so the MAP estimate would consist only on the MLE since the derivative of a constant is zero
+\[
+\log p(\lambda \mid \mathbf{x}) = \log(L) + \log p(\lambda),
+\]
+\[
+\frac{\partial}{\partial \lambda_d} \log p(\lambda \mid \mathbf{x}) = \frac{\partial}{\partial \lambda_d} \log(L) + \frac{\partial}{\partial \lambda_d} \log p(\lambda)
+\]
+\[
+\frac{\partial}{\partial \lambda_d} \log p(\lambda \mid \mathbf{x}) = \frac{\partial}{\partial \lambda_d} \log(L) + 0
+\]
+\[
+\frac{\partial}{\partial \lambda_d} \log p(\lambda \mid \mathbf{x}) = 
+\sum_{n=1}^{N} \frac{x_d^{(n)}}{\lambda_d} - N = 0
+\]
+\[
+\lambda_d = \frac{\sum_{n=1}^{N} x_d^{(n)}}{N}
+\]
+
+
 \subsection{Choice of prior (2 points)}
 When would the exponential prior on $\lambda$ be a good choice? What kind of our belief about the model parameters are we expressing in this choice of prior?
+
+\subsubsection{Solution}
+An exponential prior on $\lambda$ would introduce a penalization for big $\lambda s$, thus a belief that the values of $\lambda$ should be small. This fact can help to avoid possible situations of overfitting so it would be a good idea. A bigger $\beta_d$ would increase the penalization. 
 
 \subsection{Prior parameters (2 points)}
 If we make the $\beta$ parameters of the prior smaller and smaller, how will the shape of the prior and the MAP estimate change?
 
+\subsubsection{Solution}
+
+As $\beta \rightarrow 0$ the penalization term will be less strong and the influence of the prior on the MAP estimation would become irrelevant. The prior will become more flat and less informative for the MAP estimation that will converge to the MLE estimation shape and behaviour.
 
 \end{document}
