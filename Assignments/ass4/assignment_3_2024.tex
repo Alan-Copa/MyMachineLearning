@@ -33,10 +33,7 @@ You want to estimate the optimal parameters of the model given the data.
 \subsection{Likelihood (3 points)}
 What is the likelihood function of $\lambda$ given the data set of $N$ measurements $\{\mathbf{x}^{(1)}, \ldots, \mathbf{x}^{(N)}\}$?
 (3 points)
-
-\section*{Solution: Estimating the Parameters of a Statistical Model}
-
-\subsection*{1.1 Likelihood (3 points)}
+\\
 The likelihood function is the probability of the observed data given the parameters \(\lambda\).
 
 \[
@@ -83,20 +80,20 @@ To find the critical point, we take the derivative of \(\log(L)\) with respect t
 \]
 
 \[
-\frac{\partial \log(L)}{\partial \lambda_d} = \sum_{n=1}^{N} \frac{x_d^{(n)}}{\lambda_d} - N.
+\frac{\partial \log(L)}{\partial \lambda_d} = \sum_{n=1}^{N} \frac{x_d^{(n)}}{\lambda_d} - N
 \]
 
 \[
-\sum_{n=1}^{N} \frac{x_d^{(n)}}{\lambda_d} - N = 0.
+\sum_{n=1}^{N} \frac{x_d^{(n)}}{\lambda_d} - N = 0
 \]
 
 \[
-\lambda_d = \frac{\sum_{n=1}^{N} x_d^{(n)}}{N}.
+\lambda_d = \frac{\sum_{n=1}^{N} x_d^{(n)}}{N}
 \]
 
 The MLE for \(\lambda_d\) is:
 \[
-\lambda_d = \frac{1}{N} \sum_{n=1}^{N} x_d^{(n)},
+\lambda_d = \frac{1}{N} \sum_{n=1}^{N} x_d^{(n)}
 \]
 
 
@@ -114,7 +111,7 @@ p(\lambda \mid \mathbf{x})\ = p(\mathbf{x} | \mathbf{\lambda}) \cdot p (\lambda)
 \]
 
 \[
-\log p(\lambda \mid \mathbf{x}) = \log(L) + \log p(\lambda),
+\log p(\lambda \mid \mathbf{x}) = \log(L) + \log p(\lambda)
 \]
 \[
 \frac{\partial}{\partial \lambda_d} \log p(\lambda \mid \mathbf{x}) = \frac{\partial}{\partial \lambda_d} \log(L) + \frac{\partial}{\partial \lambda_d} \log p(\lambda)
@@ -163,7 +160,7 @@ A uniform prior means that the prior distribution function is constant for all p
 \]
 so the MAP estimate would consist only on the MLE since the derivative of a constant is zero
 \[
-\log p(\lambda \mid \mathbf{x}) = \log(L) + \log p(\lambda),
+\log p(\lambda \mid \mathbf{x}) = \log(L) + \log p(\lambda)
 \]
 \[
 \frac{\partial}{\partial \lambda_d} \log p(\lambda \mid \mathbf{x}) = \frac{\partial}{\partial \lambda_d} \log(L) + \frac{\partial}{\partial \lambda_d} \log p(\lambda)
