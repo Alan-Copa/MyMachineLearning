@@ -1,0 +1,125 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{titlesec}
+
+\geometry{margin=1in}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+
+% Title Section
+\title{Machine Learning Assignment 3\\
+Neural Networks}
+\date{Submission deadline: December 9, 2024}
+\author{}
+
+\begin{document}
+
+\maketitle
+
+\noindent Please submit your solution in PDF format (preferably, but not necessarily, \LaTeX --- this .tex file can be found on iCorsi). Handwriting and scanned documents are not allowed. 
+In case you need further help, please write on iCorsi or contact me at \href{mailto:mikhail.andronov@idsia.ch}{mikhail.andronov@idsia.ch}.
+
+\section{Estimating the parameters of a statistical model (26 points)}
+You are given a data set of $N$ measurements $\{\mathbf{x}^{(1)}, \ldots, \mathbf{x}^{(N)}\}$, and every measurement $\mathbf{x}^{(n)}$ contains $D$ numbers $(x^{(n)}_1, \ldots, x^{(n)}_D)$, such as $x^{(n)}_d \in \mathbb{N} \cup \{0\}$ for all $n \in \{1, \ldots, N\}$ and $d \in \{1, \ldots, D\}$. You decide to model the true distribution of this dataset with an independent multivariate Poisson distribution with the parameter vector $\lambda = (\lambda_1, \ldots, \lambda_D)$, which has the form
+\begin{equation}
+    p(\mathbf{x} | \mathbf{\lambda}) = \prod_{d=1}^{D}\frac{\lambda_d^{x_d}}{x_d!}e^{-\lambda_d}
+\end{equation}
+You want to estimate the optimal parameters of the model given the data.
+
+\subsection{Likelihood (3 points)}
+What is the likelihood function of $\lambda$ given the data set of $N$ measurements $\{\mathbf{x}^{(1)}, \ldots, \mathbf{x}^{(N)}\}$?
+(3 points)
+
+\section*{Solution: Estimating the Parameters of a Statistical Model}
+
+\subsection*{1.1 Likelihood (3 points)}
+The likelihood function is the probability of the observed data given the parameters \(\lambda\).
+
+\[
+L = \prod_{n=1}^{N} p(\mathbf{x}^{(n)} \mid \lambda)
+\]
+
+\[
+L = \prod_{n=1}^{N} \prod_{d=1}^{D} \frac{\lambda_d^{x_d^{(n)}}}{x_d^{(n)}!} e^{-\lambda_d}
+\]
+
+\subsection{Log-likelihood (3 points)}
+Derive the log-likelihood.
+Include all intermediate steps and simplify the final result.
+
+To find the log-likelihood, we take the natural logarithm of the likelihood function:
+\[
+\log(L) = \log \prod_{n=1}^{N} \prod_{d=1}^{D} \frac{\lambda_d^{x_d^{(n)}}}{x_d^{(n)}!} e^{-\lambda_d}
+\]
+
+\[
+\log(L) = \sum_{n=1}^{N} \sum_{d=1}^{D} \left( x_d^{(n)} \log \lambda_d - \log x_d^{(n)}! - \lambda_d \right)
+\]
+
+\[
+\log(L) = \sum_{n=1}^{N} \sum_{d=1}^{D} \left( x_d^{(n)} \log \lambda_d - \lambda_d \right) - \sum_{n=1}^{N} \sum_{d=1}^{D} \log x_d^{(n)}!
+\]
+
+
+\subsection{MLE (10 points)}
+Derive the maximum likelihood estimate (MLE) of $\mathbf{\lambda}$. You can assume the critical point to be the maximum, no second derivatives are required. Include all intermediate steps and simplify the final result.
+\\
+To find the critical point, we take the derivative of \(\log(L)\) with respect to \(\lambda_d\) and set to zero:
+
+\[
+\frac{\partial \log(L)}{\partial \lambda_d} = 0
+\]
+
+\[
+\frac{\partial \log(L)}{\partial \lambda_d} = \frac{\partial}{\partial \lambda_d} \sum_{n=1}^{N}  \left( x_d^{(n)} \log \lambda_d - \lambda_d \right) - \sum_{n=1}^{N}  \log x_d^{(n)}!
+\]
+
+\[
+\frac{\partial \log(L)}{\partial \lambda_d} = \sum_{n=1}^{N}  \left(\frac{ x_d^{(n)}}{ \lambda_d} \right) - N \cdot 1 - 0
+\]
+
+\[
+\frac{\partial \log(L)}{\partial \lambda_d} = \sum_{n=1}^{N} \frac{x_d^{(n)}}{\lambda_d} - N.
+\]
+
+\[
+\sum_{n=1}^{N} \frac{x_d^{(n)}}{\lambda_d} - N = 0.
+\]
+
+\[
+\lambda_d = \frac{\sum_{n=1}^{N} x_d^{(n)}}{N}.
+\]
+
+The MLE for \(\lambda_d\) is:
+\[
+\lambda_d = \frac{1}{N} \sum_{n=1}^{N} x_d^{(n)},
+\]
+
+
+\subsection{MAP (10 points)}
+You place a constraint on the parameters of the model by introducing a prior distribution on them. You assume independent exponential priors on the parameters $\lambda_{d}$
+$$
+p\left(\lambda\right)= \prod_{d=1}^{D}p\left(\lambda_d\right) = \prod_{d=1}^D\beta_de^{-\beta_d \lambda_d}
+$$
+where $\beta_i > 0$. What is the maximum a posteriori (MAP) estimate of $\mathbf{\lambda}$?
+Include all intermediate steps and simplify the final result.
+
+% Problem 1 Section
+\section{Additional questions (7 points)}
+Give answers to the following questions.
+
+\subsection{Different prior (3 points)}
+What would be the MAP estimate of $\lambda$ if we chose the uniform prior, i.e., the prior that treats all parameter values as equally likely? Explain your reasoning.
+
+\subsection{Choice of prior (2 points)}
+When would the exponential prior on $\lambda$ be a good choice? What kind of our belief about the model parameters are we expressing in this choice of prior?
+
+\subsection{Prior parameters (2 points)}
+If we make the $\beta$ parameters of the prior smaller and smaller, how will the shape of the prior and the MAP estimate change?
+
+
+\end{document}
