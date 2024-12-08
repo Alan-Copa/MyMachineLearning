@@ -24,8 +24,8 @@
 
 % Enable or disable solution rendering
 \newif\ifsolution
-\solutionfalse
-%\solutiontrue
+% \solutionfalse
+\solutiontrue
 
 \newcommand{\todo}[1]{{\color{red} \textbf{TODO: #1}}}
 
@@ -51,7 +51,7 @@
 \rhead{Page~\thepage~of~\pageref{LastPage}}
 \setlength{\headsep}{1cm}
 
-\author{The Swiss AI Lab IDSIA (USI-SUPSI)}
+\author{The Swiss AI Lab IDSIA (USI-SUPSI), Solution: Alan Copa}
 \title{Reinforcement Learning Assignment}
 \date{Due by 23:59 on the 16th of December, 2024}
 
@@ -104,7 +104,7 @@ Is there something wrong with the reward function?
 (4 points)
 \vspace{.5cm}
 
-\textit{TODO: your answer here}
+\textit{The robot is getting a +1 reward for each step taken, ignoring if it is a step in the right direction or if it a useful step to reach the final goal in general. This could cause the robot to try to do as many steps as possible since it tries to maximize the reward. Instead to learn a minimum distance walk to the goal it will try to perform the longest path to reach the goal. Even with a +1000 reward for reaching the final goal the robot will walk around without reaching the goal because it finds better to collect many times the +1 reward. Thus the reward function is wrong because it prioritizes step taking and not efficiency in reaching the final goal, and will not ensure that the robot will reach the final goal. }
 
 \end{minipage}
 
@@ -115,10 +115,11 @@ If there is something wrong with the reward function, how could you fix it? If n
 (4 points)
 \vspace{.5cm}
 
-\textit{TODO: your answer here}
+\textit{To fix the reward function I would have penalizing reward for taking a step to encourage least step taking, an example could be to have a reward of -1 for each step taken. For this specific case of a straight line maze, I would penalize more moving back by 1 meter (-5 reward), give -2 reward to turning left or right and give -1 reward to go forward by 1 meter. I would still give a final goal reward of +1000 such that that it balances out the negative rewards and incentives the robot to reach the final goal, since it's trying to maximize the cumulative reward (in this case, assuming the robot starts facing the final goal, the maximal cumulative reward should be 0 since the robot is taking 1000 1 meter steps forward (reward -1) to walk 1 km to the final goal (reward +1000)). }
 
 \end{minipage}
 
+\newpage
 \subsection*{Question 2}
 The discounted return for a non-episodic task is defined as $G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots$, where $\gamma \in [0, 1]$ is the discount factor.
 
@@ -129,7 +130,18 @@ Rewrite the above equation such that $G_{t+1}$ is on the right-hand side and $G_
 (2 points)
 \vspace{.5cm}
 
-\textit{TODO: your answer here}
+\[
+G_{t+1} = R_{t+2} + \gamma R_{t+3} + \gamma^2 R_{t+4} + \dots
+\]
+
+$$
+G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots
+$$
+
+Thus:
+\[
+G_t = R_{t+1} + \gamma G_{t+1}
+\]
 
 \end{minipage}
 
@@ -141,7 +153,23 @@ Give a sufficient condition for $\gamma$, which assures that the infinite series
 (3 points)
 \vspace{.5cm}
 
-\textit{TODO: your answer here}
+If the rewards are bounded it means that
+
+\[
+|R_{t+k}| \leq r_{\text{max}}, \quad \forall k \geq 1.
+\]
+
+thus, we can rewrite the discounted return $G_t$ as:
+\[
+|G_t| \leq r_{\text{max}} \left( 1 + \gamma + \gamma^2 + \dots \right)
+\]
+ we recognize the geometric series:
+\[
+\sum_{k=0}^\infty \gamma^k = 1 + \gamma + \gamma^2 + \dots
+\]
+this sum converges by definition to a stable value $ \frac{1}{1 - \gamma} $ only if $ 0 \leq \gamma < 1$. Thus, since $R_t$ is a known value, $G_t$ is bounded when $ 0 \leq \gamma < 1$.
+
+
 
 \end{minipage}
 
@@ -153,7 +181,15 @@ Let the task be an episodic setting, with the robot running for $T = 5$ time ste
 (5 points)
 \vspace{.5cm}
 
-\textit{TODO: your answer here}
+In an episodic task the terminal state has reward $G_5 = 0$ since there are no future rewards. \\ Following the formula $
+G_t = R_{t+1} + \gamma G_{t+1} $:
+
+G_5 = 0 \quad \text{(Terminal state)} \\
+G_4 = R_5 + \gamma G_5 = 3 + 0.9 \cdot 0 = 3 \\
+G_3 = R_4 + \gamma G_4 = -5 + 0.9 \cdot 3 = -2.3 \\
+G_2 = R_3 + \gamma G_3 = 2.5 + 0.9 \cdot -2.3 = 0.43 \\
+G_1 = R_2 + \gamma G_2 = -1 + 0.9 \cdot 0.43 = -0.613 \\
+G_0 = R_1 + \gamma G_1 = 1 + 0.9 \cdot -0.613 = 0.4483
 
 \end{minipage}
 
@@ -164,16 +200,54 @@ Now consider an episodic tasks, and similar to the last question, we add a const
 (5 points)
 \vspace{.5cm}
 
-\textit{TODO: your answer here}
+The new discounted return is:
+\[
+G_t' = (R_{t+1} + c) + \gamma (R_{t+2} + c) + \gamma^2 (R_{t+3} + c) + \dots
+\]
+rearranging:
+\[
+G_t' = (R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \dots) + (c + \gamma c + \gamma^2 c + \dots)
+\]
+we identify $G_t$:
+\[
+G_t' = G_t + c (1 + \gamma + \gamma^2 + \dots)
+\]
+we introduce the converging geometric series from before, that now is finite
+\[
+\sum_{k=0}^{T-t-1} \gamma^k = \frac{1 - \gamma^{T-t}}{1 - \gamma}, \quad \text{for } 0 \leq \gamma < 1.
+\]
+finally:
+\[
+G_t' = G_t + c \cdot \frac{1 - \gamma^{T-t}}{1 - \gamma}.
+\]
 
 \end{minipage}
 
+\newpage
 \subsection*{Bonus Question.}
 Suppose the infinite series for $G_t$ is bounded, and each reward in the series is a constant of $+1$.
 What is a simple formula for this bound? Write it down without using summation.
 (3 points)
 \vspace{.5cm}
-
-\textit{TODO: your answer here}
+\\
+Starting from:
+$$
+G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots
+$$
+we know:
+$$
+R_t = 1, \forall t
+$$
+so the discounted return becomes:
+\[
+G_t =  1 + \gamma + \gamma^2 + \dots = \sum_{k=0}^\infty \gamma^k
+\]
+since $G_t $ is bounded, we have $ 0 \leq \gamma < 1$, so we can compute the result of the infinite geometric series, thus:
+$$
+\sum_{k=0}^\infty \gamma^k = \frac{1}{1 - \gamma}
+$$
+$$
+G_t = \frac{1}{1 - \gamma}
+$$
 
 \end{document}
